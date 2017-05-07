@@ -125,6 +125,18 @@ export var InnerSlider = createReactClass({
       currentSlide: this.state.currentSlide
     });
   },
+  slickForward: function (offset) {
+    this.changeSlide({
+      message: 'next',
+      offset: offset
+    });
+  },
+  slickBackward: function (offset) {
+    this.changeSlide({
+      message: 'previous',
+      offset: offset
+    });
+  },
   render: function () {
     var className = classnames('slick-initialized', 'slick-slider', this.props.className, {
       'slick-vertical': this.props.vertical,

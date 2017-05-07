@@ -8,8 +8,9 @@ var EventHandlers = {
   // Event handler for previous and next
   changeSlide: function (options) {
     var indexOffset, previousInt, slideOffset, unevenOffset, targetSlide;
-    const {slidesToScroll, slidesToShow} = this.props
+    let {slidesToScroll, slidesToShow} = this.props
     const {slideCount, currentSlide} = this.state
+    if(options.offset) slidesToScroll = options.offset;
     unevenOffset = (slideCount % slidesToScroll !== 0);
     indexOffset = unevenOffset ? 0 : (slideCount - currentSlide) % slidesToScroll;
 
