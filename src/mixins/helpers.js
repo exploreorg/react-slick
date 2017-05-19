@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {getTrackCSS, getTrackLeft, getTrackAnimateCSS} from './trackHelper';
 import assign from 'object-assign';
+import {isString} from '../utils';
 
 var helpers = {
   initialize: function (props) {
@@ -24,7 +25,9 @@ var helpers = {
     const slideHeight = this.getHeight(slickList.querySelector('[data-index="0"]'));
     const listHeight = slideHeight * props.slidesToShow;
 
-    var currentSlide = props.rtl ? slideCount - 1 - props.initialSlide : props.initialSlide;
+    var initialIndex = this.getCurrentSlide(props.initialSlide);
+
+    var currentSlide = props.rtl ? slideCount - 1 - initialIndex : initialIndex;
 
     this.setState({
       slideCount,
@@ -47,6 +50,26 @@ var helpers = {
 
       this.autoPlay(); // once we're set up, trigger the initial autoplay.
     });
+  },
+  getCurrentSlide: function (initialSlide) {
+    var initialIndex = initialSlide;
+
+    if (isString(initialIndex)) {
+      const slickList = ReactDOM.findDOMNode(this.list);
+      var selectedElement = slickList.querySelector(initialIndex);
+      var initialIndex = selectedElement ? parseInt(selectedElement.dataset.index) : 0;
+    }
+
+    return initialIndex;
+  },
+  convertToIndex: function (selector) {
+    if (isString(selector)) {
+      const slickList = ReactDOM.findDOMNode(this.list);
+      var selectedElement = slickList.querySelector(selector);
+      var selector = selectedElement ? parseInt(selectedElement.dataset.index) : 0;
+    }
+
+    return selector;
   },
   update: function (props) {
     const slickList = ReactDOM.findDOMNode(this.list);
@@ -101,7 +124,7 @@ var helpers = {
   },
   adaptHeight: function () {
     if (this.props.adaptiveHeight) {
-      var selector = '[data-index="' + this.state.currentSlide +'"]';
+      var selector = '[data-index="' + this.getCurrentSlide(this.state.currentSlide) +'"]';
       if (this.list) {
         var slickList = ReactDOM.findDOMNode(this.list);
         slickList.style.height = slickList.querySelector(selector).offsetHeight + 'px';

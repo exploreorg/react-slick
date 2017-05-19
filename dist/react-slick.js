@@ -78,15 +78,15 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-	var _json2mq = __webpack_require__(21);
+	var _json2mq = __webpack_require__(22);
 
 	var _json2mq2 = _interopRequireDefault(_json2mq);
 
-	var _defaultProps = __webpack_require__(10);
+	var _defaultProps = __webpack_require__(11);
 
 	var _defaultProps2 = _interopRequireDefault(_defaultProps);
 
-	var _canUseDom = __webpack_require__(23);
+	var _canUseDom = __webpack_require__(24);
 
 	var _canUseDom2 = _interopRequireDefault(_canUseDom);
 
@@ -98,7 +98,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
 
-	var enquire = _canUseDom2.default && __webpack_require__(24);
+	var enquire = _canUseDom2.default && __webpack_require__(25);
 
 	var Slider = function (_React$Component) {
 	  _inherits(Slider, _React$Component);
@@ -257,19 +257,19 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _helpers2 = _interopRequireDefault(_helpers);
 
-	var _initialState = __webpack_require__(9);
+	var _initialState = __webpack_require__(10);
 
 	var _initialState2 = _interopRequireDefault(_initialState);
 
-	var _defaultProps = __webpack_require__(10);
+	var _defaultProps = __webpack_require__(11);
 
 	var _defaultProps2 = _interopRequireDefault(_defaultProps);
 
-	var _createReactClass = __webpack_require__(11);
+	var _createReactClass = __webpack_require__(12);
 
 	var _createReactClass2 = _interopRequireDefault(_createReactClass);
 
-	var _classnames = __webpack_require__(17);
+	var _classnames = __webpack_require__(18);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -277,11 +277,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-	var _track = __webpack_require__(18);
+	var _track = __webpack_require__(19);
 
-	var _dots = __webpack_require__(19);
+	var _dots = __webpack_require__(20);
 
-	var _arrows = __webpack_require__(20);
+	var _arrows = __webpack_require__(21);
 
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -310,16 +310,18 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.setState({
 	      mounted: true
 	    });
-	    var lazyLoadedList = [];
-	    for (var i = 0; i < _react2.default.Children.count(this.props.children); i++) {
-	      if (i >= this.state.currentSlide && i < this.state.currentSlide + this.props.slidesToShow) {
-	        lazyLoadedList.push(i);
-	      }
-	    }
 
-	    if (this.props.lazyLoad && this.state.lazyLoadedList.length === 0) {
+	    if (this.props.lazyLoad) {
+	      var lazyLoadedList = [];
+
+	      for (var i = 0; i < _react2.default.Children.count(this.props.children); i++) {
+	        if (i >= this.state.currentSlide && i < this.state.currentSlide + this.props.slidesToShow) {
+	          lazyLoadedList.push(i);
+	        }
+	      }
+
 	      this.setState({
-	        lazyLoadedList: lazyLoadedList
+	        lazyLoadedList: this.getLazyLoadedList(this.state.currentSlide, lazyLoadedList)
 	      });
 	    }
 	  },
@@ -352,6 +354,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+	    // lazyLoad
+	    if (nextProps.lazyLoad && nextProps.preLoad != this.props.preLoad) {
+	      this.setState({
+	        lazyLoadedList: this.getLazyLoadedList(this.state.currentSlide, null, nextProps)
+	      });
+	    }
+
 	    if (this.props.slickGoTo != nextProps.slickGoTo) {
 	      if ((undefined) !== 'production') {
 	        console.warn('react-slick deprecation warning: slickGoTo prop is deprecated and it will be removed in next release. Use slickGoTo method instead');
@@ -391,6 +400,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.changeSlide({ message: 'next' });
 	  },
 	  slickGoTo: function slickGoTo(slide) {
+	    slide = this.convertToIndex(slide);
 	    typeof slide === 'number' && this.changeSlide({
 	      message: 'index',
 	      index: slide,
@@ -1165,6 +1175,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
+	var _utils = __webpack_require__(9);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var helpers = {
@@ -1186,7 +1198,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var slideHeight = this.getHeight(slickList.querySelector('[data-index="0"]'));
 	    var listHeight = slideHeight * props.slidesToShow;
 
-	    var currentSlide = props.rtl ? slideCount - 1 - props.initialSlide : props.initialSlide;
+	    var initialIndex = this.getCurrentSlide(props.initialSlide);
+
+	    var currentSlide = props.rtl ? slideCount - 1 - initialIndex : initialIndex;
 
 	    this.setState({
 	      slideCount: slideCount,
@@ -1209,6 +1223,26 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      this.autoPlay(); // once we're set up, trigger the initial autoplay.
 	    });
+	  },
+	  getCurrentSlide: function getCurrentSlide(initialSlide) {
+	    var initialIndex = initialSlide;
+
+	    if ((0, _utils.isString)(initialIndex)) {
+	      var slickList = _reactDom2.default.findDOMNode(this.list);
+	      var selectedElement = slickList.querySelector(initialIndex);
+	      var initialIndex = selectedElement ? parseInt(selectedElement.dataset.index) : 0;
+	    }
+
+	    return initialIndex;
+	  },
+	  convertToIndex: function convertToIndex(selector) {
+	    if ((0, _utils.isString)(selector)) {
+	      var slickList = _reactDom2.default.findDOMNode(this.list);
+	      var selectedElement = slickList.querySelector(selector);
+	      var selector = selectedElement ? parseInt(selectedElement.dataset.index) : 0;
+	    }
+
+	    return selector;
 	  },
 	  update: function update(props) {
 	    var slickList = _reactDom2.default.findDOMNode(this.list);
@@ -1264,7 +1298,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  adaptHeight: function adaptHeight() {
 	    if (this.props.adaptiveHeight) {
-	      var selector = '[data-index="' + this.state.currentSlide + '"]';
+	      var selector = '[data-index="' + this.getCurrentSlide(this.state.currentSlide) + '"]';
 	      if (this.list) {
 	        var slickList = _reactDom2.default.findDOMNode(this.list);
 	        slickList.style.height = slickList.querySelector(selector).offsetHeight + 'px';
@@ -1287,6 +1321,50 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	    return canGo;
+	  },
+	  setItemLazyList: function setItemLazyList(list, item) {
+	    if (list.indexOf(item) == -1) {
+	      list.push(item);
+	    }
+	  },
+	  getLazyLoadedList: function getLazyLoadedList(targetSlide, lazyLoadedList, props) {
+	    var _ref = props || this.props,
+	        preLoad = _ref.preLoad,
+	        slidesToShow = _ref.slidesToShow,
+	        children = _ref.children;
+
+	    var listLength = _react2.default.Children.count(children) - 1;
+
+	    if (!lazyLoadedList) {
+	      lazyLoadedList = this.state.lazyLoadedList;
+	    }
+
+	    var minDistance = targetSlide - preLoad;
+	    var maxDistance = targetSlide + slidesToShow + preLoad;
+	    var item;
+	    var currentDistance;
+
+	    do {
+	      currentDistance = minDistance;
+
+	      minDistance++;
+
+	      if (currentDistance < 0) {
+	        this.setItemLazyList(lazyLoadedList, listLength + (currentDistance + 1));
+
+	        continue;
+	      }
+
+	      if (currentDistance > listLength) {
+	        this.setItemLazyList(lazyLoadedList, 0 + (currentDistance - listLength - 1));
+
+	        continue;
+	      }
+
+	      this.setItemLazyList(lazyLoadedList, currentDistance);
+	    } while (minDistance < maxDistance);
+
+	    return lazyLoadedList;
 	  },
 	  slideHandler: function slideHandler(index) {
 	    var _this = this;
@@ -1389,17 +1467,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 
 	    if (this.props.lazyLoad) {
-	      var loaded = true;
-	      var slidesToLoad = [];
-	      for (var i = targetSlide; i < targetSlide + this.props.slidesToShow; i++) {
-	        loaded = loaded && this.state.lazyLoadedList.indexOf(i) >= 0;
-	        if (!loaded) {
-	          slidesToLoad.push(i);
-	        }
-	      }
-	      if (!loaded) {
+	      var listCount = _react2.default.Children.count(this.props.children);
+
+	      if (listCount != this.state.lazyLoadedList.length) {
 	        this.setState({
-	          lazyLoadedList: this.state.lazyLoadedList.concat(slidesToLoad)
+	          lazyLoadedList: this.getLazyLoadedList(targetSlide)
 	        });
 	      }
 	    }
@@ -1519,6 +1591,22 @@ return /******/ (function(modules) { // webpackBootstrap
 /* 9 */
 /***/ (function(module, exports) {
 
+	'use strict';
+
+	exports.__esModule = true;
+
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+	exports.isString = isString;
+	function isString(value) {
+	  var type = typeof value === 'undefined' ? 'undefined' : _typeof(value);
+	  return type == 'string' || type == 'object' && value != null && !Array.isArray(value) && getTag(value) == '[object String]';
+	}
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
 	"use strict";
 
 	var initialState = {
@@ -1567,7 +1655,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = initialState;
 
 /***/ }),
-/* 10 */
+/* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1605,6 +1693,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    infinite: true,
 	    initialSlide: 0,
 	    lazyLoad: false,
+	    preLoad: 0,
 	    pauseOnHover: true,
 	    responsive: null,
 	    rtl: false,
@@ -1633,7 +1722,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = defaultProps;
 
 /***/ }),
-/* 11 */
+/* 12 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -1649,7 +1738,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	'use strict';
 
 	var React = __webpack_require__(2);
-	var factory = __webpack_require__(12);
+	var factory = __webpack_require__(13);
 
 	// Hack to grab NoopUpdateQueue from isomorphic React
 	var ReactNoopUpdateQueue = new React.Component().updater;
@@ -1662,7 +1751,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 12 */
+/* 13 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -1679,11 +1768,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _assign = __webpack_require__(7);
 
-	var emptyObject = __webpack_require__(13);
-	var _invariant = __webpack_require__(14);
+	var emptyObject = __webpack_require__(14);
+	var _invariant = __webpack_require__(15);
 
 	if ((undefined) !== 'production') {
-	  var warning = __webpack_require__(15);
+	  var warning = __webpack_require__(16);
 	}
 
 	var MIXINS_KEY = 'mixins';
@@ -2392,7 +2481,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 13 */
+/* 14 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -2416,7 +2505,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = emptyObject;
 
 /***/ }),
-/* 14 */
+/* 15 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -2476,7 +2565,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = invariant;
 
 /***/ }),
-/* 15 */
+/* 16 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	/**
@@ -2491,7 +2580,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	'use strict';
 
-	var emptyFunction = __webpack_require__(16);
+	var emptyFunction = __webpack_require__(17);
 
 	/**
 	 * Similar to invariant but only logs a warning if the condition is not met.
@@ -2547,7 +2636,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = warning;
 
 /***/ }),
-/* 16 */
+/* 17 */
 /***/ (function(module, exports) {
 
 	"use strict";
@@ -2590,7 +2679,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = emptyFunction;
 
 /***/ }),
-/* 17 */
+/* 18 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -2644,7 +2733,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 18 */
+/* 19 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2660,7 +2749,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _objectAssign2 = _interopRequireDefault(_objectAssign);
 
-	var _classnames = __webpack_require__(17);
+	var _classnames = __webpack_require__(18);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -2827,7 +2916,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(_react2.default.Component);
 
 /***/ }),
-/* 19 */
+/* 20 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2839,7 +2928,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _classnames = __webpack_require__(17);
+	var _classnames = __webpack_require__(18);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -2919,7 +3008,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(_react2.default.Component);
 
 /***/ }),
-/* 20 */
+/* 21 */
 /***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2933,7 +3022,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _react2 = _interopRequireDefault(_react);
 
-	var _classnames = __webpack_require__(17);
+	var _classnames = __webpack_require__(18);
 
 	var _classnames2 = _interopRequireDefault(_classnames);
 
@@ -3058,10 +3147,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	}(_react2.default.Component);
 
 /***/ }),
-/* 21 */
+/* 22 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var camel2hyphen = __webpack_require__(22);
+	var camel2hyphen = __webpack_require__(23);
 
 	var isDimension = function (feature) {
 	  var re = /[height|width]$/;
@@ -3114,7 +3203,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = json2mq;
 
 /***/ }),
-/* 22 */
+/* 23 */
 /***/ (function(module, exports) {
 
 	var camel2hyphen = function (str) {
@@ -3128,7 +3217,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = camel2hyphen;
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports) {
 
 	var canUseDOM = !!(
@@ -3140,19 +3229,19 @@ return /******/ (function(modules) { // webpackBootstrap
 	module.exports = canUseDOM;
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var MediaQueryDispatch = __webpack_require__(25);
+	var MediaQueryDispatch = __webpack_require__(26);
 	module.exports = new MediaQueryDispatch();
 
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var MediaQuery = __webpack_require__(26);
-	var Util = __webpack_require__(28);
+	var MediaQuery = __webpack_require__(27);
+	var Util = __webpack_require__(29);
 	var each = Util.each;
 	var isFunction = Util.isFunction;
 	var isArray = Util.isArray;
@@ -3239,11 +3328,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
-	var QueryHandler = __webpack_require__(27);
-	var each = __webpack_require__(28).each;
+	var QueryHandler = __webpack_require__(28);
+	var each = __webpack_require__(29).each;
 
 	/**
 	 * Represents a single media query, manages it's state and registered handlers for this query
@@ -3338,7 +3427,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports) {
 
 	/**
@@ -3418,7 +3507,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports) {
 
 	/**

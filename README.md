@@ -91,7 +91,7 @@ class SimpleSlider extends React.Component {
 | fade           | bool | Slides use fade for transition  | Yes |
 | focusOnSelect  | bool | Go to slide on click | Yes |
 | infinite       | bool | should the gallery wrap around it's contents | Yes |
-| initialSlide   | int | which item should be the first to be displayed | Yes |
+| initialSlide   | int &#124; String | which item should be the first to be displayed (Accepts index or css selector) | Yes |
 | lazyLoad       | bool | Loads images or renders components on demands | Yes |
 | preLoad        | int | loading of components in advance, only if "lazyLoad" (default = 0) | Yes |
 | pauseOnHover   | bool | prevents autoplay while hovering | Yes |
@@ -116,7 +116,7 @@ class SimpleSlider extends React.Component {
 ### Methods
 * `slickNext()`   - function called to change current slide on next slide ([Example](https://github.com/akiran/react-slick/blob/master/examples/PreviousNextMethods.js))
 * `slickPrev()`   - function called to change current slide on previous slide ([Example](https://github.com/akiran/react-slick/blob/master/examples/PreviousNextMethods.js))
-* `slickGoTo(slideNumber)` - function called to change current slide to given slide number ([Example](https://github.com/akiran/react-slick/blob/master/examples/SlickGoTo.js))
+* `slickGoTo(slide)` - function called to change current slide to given slide number or css selector ([Example](https://github.com/akiran/react-slick/blob/master/examples/SlickGoTo.js))
 * `slickForward(numberOfSlidesToScroll)` - function called to scroll the slider forward `n` number of items
 * `slickBackward(numberOfSlidesToScroll)` - function called to scroll the slider backward `n` number of items
 

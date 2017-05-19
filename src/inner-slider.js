@@ -128,6 +128,7 @@ export var InnerSlider = createReactClass({
     this.changeSlide({message: 'next'});
   },
   slickGoTo: function (slide) {
+    slide = this.convertToIndex(slide);
     typeof slide === 'number' && this.changeSlide({
       message: 'index',
       index: slide,
