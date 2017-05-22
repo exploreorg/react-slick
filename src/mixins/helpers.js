@@ -122,6 +122,26 @@ var helpers = {
   getHeight(elem) {
     return elem.getBoundingClientRect().height || elem.offsetHeight || 0;
   },
+  getPaginationInfo() {
+    var sliderProps = this.props;
+    var sliderState = this.state;
+    var totalPages = Math.ceil(sliderState.slideCount / sliderProps.slidesToScroll);
+    var currentPage = null;
+    var pageGroups = Array.from(Array(sliderState.slideCount).keys());
+    var chunks = [],i = 0,n = pageGroups.length;
+
+    while (i < n) {
+      chunks.push(pageGroups.slice(i, i += sliderProps.slidesToScroll));
+    }
+
+    for(var i = 0; i < chunks.length; i++) {
+      if(chunks[i].indexOf(sliderState.currentSlide) > -1) {
+        currentPage = i + 1;
+        break;
+      }
+    }
+    return [currentPage, totalPages];
+  },
   adaptHeight: function () {
     if (this.props.adaptiveHeight) {
       var selector = '[data-index="' + this.getCurrentSlide(this.state.currentSlide) +'"]';

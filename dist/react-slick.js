@@ -131,7 +131,7 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    var _this = _possibleConstructorReturn(this, _React$Component.call(this, props, context));
 
-	    _this.setDestination = function () {
+	    _this.setDestination = function (destinationObj) {
 	      var destination = _this.state.destination;
 
 	      var destinationPortal = destinationPortals[_this.props.name];
@@ -188,7 +188,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	  }
 
 	  PaginationDestination.prototype.componentDidMount = function componentDidMount() {
-	    var name = this.props.name;
+	    var _props = this.props,
+	        name = _props.name,
+	        paginationRender = _props.paginationRender;
 
 	    if (name in destinationPortals) {
 	      console.warn('Warning: Multiple destination portals with the same name "' + name + '" detected.');
@@ -209,7 +211,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	  return PaginationDestination;
 	}(_react2.default.Component), _class2.propTypes = {
-	  name: _propTypes2.default.string.isRequired
+	  name: _propTypes2.default.string.isRequired,
+	  paginationRender: _propTypes2.default.func
 	}, _temp2);
 
 /***/ }),
@@ -1595,6 +1598,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var _pagination = __webpack_require__(1);
 
+	var _utils = __webpack_require__(19);
+
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var InnerSlider = exports.InnerSlider = (0, _createReactClass2.default)({
@@ -1732,6 +1737,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  },
 	  render: function render() {
+	    var _props;
+
 	    var className = (0, _classnames2.default)('slick-initialized', 'slick-slider', this.props.className, {
 	      'slick-vertical': this.props.vertical
 	    });
@@ -1813,7 +1820,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        };
 	      }
 	    }
-
+	    var paginationName = this.props.paginationName && (0, _utils.isString)(this.props.paginationName) ? this.props.paginationName : null;
 	    var listStyle = (0, _objectAssign2.default)({}, verticalHeightStyle, centerPaddingStyle);
 
 	    return _react2.default.createElement(
@@ -1848,10 +1855,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      ),
 	      nextArrow,
 	      dots,
-	      _react2.default.createElement(
+	      paginationName && _react2.default.createElement(
 	        _pagination.PaginationSource,
-	        { name: 'pagination' },
-	        'This is some text.'
+	        { name: paginationName },
+	        this.props.paginationRender && (_props = this.props).paginationRender.apply(_props, this.getPaginationInfo())
 	      )
 	    );
 	  }
@@ -2605,6 +2612,28 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  getHeight: function getHeight(elem) {
 	    return elem.getBoundingClientRect().height || elem.offsetHeight || 0;
+	  },
+	  getPaginationInfo: function getPaginationInfo() {
+	    var sliderProps = this.props;
+	    var sliderState = this.state;
+	    var totalPages = Math.ceil(sliderState.slideCount / sliderProps.slidesToScroll);
+	    var currentPage = null;
+	    var pageGroups = Array.from(Array(sliderState.slideCount).keys());
+	    var chunks = [],
+	        i = 0,
+	        n = pageGroups.length;
+
+	    while (i < n) {
+	      chunks.push(pageGroups.slice(i, i += sliderProps.slidesToScroll));
+	    }
+
+	    for (var i = 0; i < chunks.length; i++) {
+	      if (chunks[i].indexOf(sliderState.currentSlide) > -1) {
+	        currentPage = i + 1;
+	        break;
+	      }
+	    }
+	    return [currentPage, totalPages];
 	  },
 
 	  adaptHeight: function adaptHeight() {

@@ -13,6 +13,7 @@ import {Track} from './track';
 import {Dots} from './dots';
 import {PrevArrow, NextArrow} from './arrows';
 import {PaginationSource} from './pagination';
+import {isString} from './utils';
 
 export var InnerSlider = createReactClass({
   mixins: [HelpersMixin, EventHandlersMixin],
@@ -230,7 +231,7 @@ export var InnerSlider = createReactClass({
         };
       }
     }
-
+    const paginationName = (this.props.paginationName && isString(this.props.paginationName)) ? this.props.paginationName : null;
     const listStyle = assign({}, verticalHeightStyle, centerPaddingStyle);
 
     return (
@@ -260,9 +261,11 @@ export var InnerSlider = createReactClass({
         </div>
         {nextArrow}
         {dots}
-        <PaginationSource name="pagination">
-          This is some text.
+        {paginationName && 
+          <PaginationSource name={paginationName}>
+          {this.props.paginationRender && this.props.paginationRender(...this.getPaginationInfo())}
           </PaginationSource>
+        }
       </div>
     );
   }

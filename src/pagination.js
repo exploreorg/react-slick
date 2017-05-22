@@ -45,7 +45,7 @@ export class PaginationSource extends React.Component {
     }
   }
 
-  setDestination = () => {
+  setDestination = (destinationObj) => {
     const {destination} = this.state;
     const destinationPortal = destinationPortals[this.props.name];
     if (destination && destination.portal === destinationPortal) return;
@@ -59,11 +59,12 @@ export class PaginationSource extends React.Component {
 
 export class PaginationDestination extends React.Component {
   static propTypes = {
-    name: PropTypes.string.isRequired
+    name: PropTypes.string.isRequired,
+    paginationRender: PropTypes.func
   }
 
   componentDidMount() {
-    const {name} = this.props;
+    const {name, paginationRender} = this.props;
     if (name in destinationPortals) {
       console.warn(`Warning: Multiple destination portals with the same name "${name}" detected.`);
     }
