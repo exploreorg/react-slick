@@ -1,2 +1,2 @@
-module.exports = require('./slider');
-module.exports = require('./pagination')
+export Slider from './slider.js';
+export {PaginationDestination as Pagination} from './pagination.js';

@@ -12,6 +12,7 @@ import assign from 'object-assign';
 import {Track} from './track';
 import {Dots} from './dots';
 import {PrevArrow, NextArrow} from './arrows';
+import {PaginationSource} from './pagination';
 
 export var InnerSlider = createReactClass({
   mixins: [HelpersMixin, EventHandlersMixin],
@@ -259,6 +260,9 @@ export var InnerSlider = createReactClass({
         </div>
         {nextArrow}
         {dots}
+        <PaginationSource name="pagination">
+          This is some text.
+          </PaginationSource>
       </div>
     );
   }
