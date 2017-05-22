@@ -9,7 +9,7 @@
     "no-alert": 0
   },
   "ecmaFeatures": {
-    "jsx": true,
+    "jsx": true
   },
   "env": {
     "node": true,
