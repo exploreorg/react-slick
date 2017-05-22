@@ -73,6 +73,10 @@ export class PaginationDestination extends React.Component {
     emitter.emit('destination', this);
   }
 
+  componentDidUpdate() {
+    emitter.emit('destination', this);
+  }
+
   componentWillUnmount() {
     delete destinationPortals[this.props.name];
     emitter.emit('destination', this);

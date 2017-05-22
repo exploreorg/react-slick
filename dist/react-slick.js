@@ -200,6 +200,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	    emitter.emit('destination', this);
 	  };
 
+	  PaginationDestination.prototype.componentDidUpdate = function componentDidUpdate() {
+	    emitter.emit('destination', this);
+	  };
+
 	  PaginationDestination.prototype.componentWillUnmount = function componentWillUnmount() {
 	    delete destinationPortals[this.props.name];
 	    emitter.emit('destination', this);
