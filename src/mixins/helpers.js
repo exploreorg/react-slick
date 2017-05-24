@@ -57,7 +57,7 @@ var helpers = {
     if (isString(initialIndex)) {
       const slickList = ReactDOM.findDOMNode(this.list);
       var selectedElement = slickList.querySelector(initialIndex);
-      var initialIndex = selectedElement ? parseInt(selectedElement.dataset.index) : 0;
+      var initialIndex = selectedElement ? parseInt(selectedElement.getAttribute('data-index')) : 0;
     }
 
     return initialIndex;
@@ -66,7 +66,7 @@ var helpers = {
     if (isString(selector)) {
       const slickList = ReactDOM.findDOMNode(this.list);
       var selectedElement = slickList.querySelector(selector);
-      var selector = selectedElement ? parseInt(selectedElement.dataset.index) : 0;
+      var selector = selectedElement ? parseInt(selectedElement.getAttribute('data-index')) : 0;
     }
 
     return selector;

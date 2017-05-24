@@ -2552,7 +2552,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if ((0, _utils.isString)(initialIndex)) {
 	      var slickList = _reactDom2.default.findDOMNode(this.list);
 	      var selectedElement = slickList.querySelector(initialIndex);
-	      var initialIndex = selectedElement ? parseInt(selectedElement.dataset.index) : 0;
+	      var initialIndex = selectedElement ? parseInt(selectedElement.getAttribute('data-index')) : 0;
 	    }
 
 	    return initialIndex;
@@ -2561,7 +2561,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if ((0, _utils.isString)(selector)) {
 	      var slickList = _reactDom2.default.findDOMNode(this.list);
 	      var selectedElement = slickList.querySelector(selector);
-	      var selector = selectedElement ? parseInt(selectedElement.dataset.index) : 0;
+	      var selector = selectedElement ? parseInt(selectedElement.getAttribute('data-index')) : 0;
 	    }
 
 	    return selector;
