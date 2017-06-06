@@ -71,7 +71,6 @@ export var getTrackAnimateCSS = function (spec) {
 };
 
 export var getTrackLeft = function (spec) {
-
   checkSpecKeys(spec, [
    'slideIndex', 'trackRef', 'infinite', 'centerMode', 'slideCount', 'slidesToShow',
    'slidesToScroll', 'slideWidth', 'listWidth', 'variableWidth', 'slideHeight']);
@@ -85,7 +84,7 @@ export var getTrackLeft = function (spec) {
     return 0;
   }
 
-  if (spec.infinite) {
+  if (spec.dynamicInfinite) {
     if (spec.slideCount >= spec.slidesToShow) {
       slideOffset = (spec.slideWidth * spec.slidesToShow) * -1;
       verticalOffset = (spec.slideHeight * spec.slidesToShow) * -1;

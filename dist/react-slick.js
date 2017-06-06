@@ -1675,6 +1675,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  },
 	  componentWillReceiveProps: function componentWillReceiveProps(nextProps) {
+
+	    if (this.state.slideCount && this.props.slidesToShow) {
+	      if (this.state.slideCount <= this.props.slidesToShow) {
+	        this.setState({ dynamicInfinite: false, currentSlide: 0 });
+	      } else {
+	        this.setState({ dynamicInfinite: this.props.infinite });
+	      }
+	    }
 	    // lazyLoad
 	    if (nextProps.lazyLoad && nextProps.preLoad != this.props.preLoad) {
 	      this.setState({
@@ -1747,24 +1755,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'slick-vertical': this.props.vertical
 	    });
 
-	    var dynamicInfinite = this.props.infinite;
-	    var dynamicCurrentSlide = this.state.currentSlide;
-
-	    if (this.state.slideCount && this.props.slidesToShow) {
-	      if (this.state.slideCount <= this.props.slidesToShow) {
-	        dynamicInfinite = false;
-	        this.state.currentSlide = 0;
-	      }
-	    }
-
 	    var trackProps = {
 	      fade: this.props.fade,
 	      cssEase: this.props.cssEase,
 	      speed: this.props.speed,
-	      infinite: dynamicInfinite,
+	      infinite: this.state.dynamicInfinite,
 	      centerMode: this.props.centerMode,
 	      focusOnSelect: this.props.focusOnSelect ? this.selectHandler : null,
-	      currentSlide: dynamicCurrentSlide,
+	      currentSlide: this.state.currentSlide,
 	      lazyLoad: this.props.lazyLoad,
 	      lazyLoadedList: this.state.lazyLoadedList,
 	      rtl: this.props.rtl,
@@ -1782,8 +1780,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var dotProps = {
 	        dotsClass: this.props.dotsClass,
 	        slideCount: this.state.slideCount,
-	        slidesToShow: dynamicInfinite,
-	        currentSlide: dynamicCurrentSlide,
+	        slidesToShow: this.state.dynamicInfinite,
+	        currentSlide: this.state.currentSlide,
 	        slidesToScroll: this.props.slidesToScroll,
 	        clickHandler: this.changeSlide,
 	        children: this.props.children,
@@ -1796,7 +1794,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var prevArrow, nextArrow;
 
 	    var arrowProps = {
-	      infinite: dynamicInfinite,
+	      infinite: this.state.dynamicInfinite,
 	      centerMode: this.props.centerMode,
 	      currentSlide: this.state.currentSlide,
 	      slideCount: this.state.slideCount,
@@ -2310,7 +2308,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 	var getTrackLeft = exports.getTrackLeft = function getTrackLeft(spec) {
-
 	  checkSpecKeys(spec, ['slideIndex', 'trackRef', 'infinite', 'centerMode', 'slideCount', 'slidesToShow', 'slidesToScroll', 'slideWidth', 'listWidth', 'variableWidth', 'slideHeight']);
 
 	  var slideOffset = 0;
@@ -2322,7 +2319,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    return 0;
 	  }
 
-	  if (spec.infinite) {
+	  if (spec.dynamicInfinite) {
 	    if (spec.slideCount >= spec.slidesToShow) {
 	      slideOffset = spec.slideWidth * spec.slidesToShow * -1;
 	      verticalOffset = spec.slideHeight * spec.slidesToShow * -1;
@@ -2994,16 +2991,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	    edgeDragged: false,
 	    swiped: false, // used by swipeEvent. differentites between touch and swipe.
 	    trackStyle: {},
-	    trackWidth: 0
+	    trackWidth: 0,
+	    dynamicInfinite: false
 
-	    // Removed
-	    // transformsEnabled: false,
-	    // $nextArrow: null,
-	    // $prevArrow: null,
-	    // $dots: null,
-	    // $list: null,
-	    // $slideTrack: null,
-	    // $slides: null,
 	};
 
 	module.exports = initialState;

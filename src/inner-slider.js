@@ -84,6 +84,14 @@ export var InnerSlider = createReactClass({
     }
   },
   componentWillReceiveProps: function(nextProps) {
+
+    if(this.state.slideCount && this.props.slidesToShow) {
+      if(this.state.slideCount <= this.props.slidesToShow) {
+        this.setState({dynamicInfinite: false, currentSlide: 0});
+      } else {
+        this.setState({dynamicInfinite: this.props.infinite});
+      }
+    }
     // lazyLoad
     if (nextProps.lazyLoad && nextProps.preLoad != this.props.preLoad) {
       this.setState({
@@ -154,24 +162,14 @@ export var InnerSlider = createReactClass({
       'slick-vertical': this.props.vertical,
     });
 
-    var dynamicInfinite = this.props.infinite;
-    var dynamicCurrentSlide = this.state.currentSlide;
-
-    if(this.state.slideCount && this.props.slidesToShow) {
-      if(this.state.slideCount <= this.props.slidesToShow) {
-        dynamicInfinite = false;
-        this.state.currentSlide = 0;
-      }
-    }
-
     var trackProps = {
       fade: this.props.fade,
       cssEase: this.props.cssEase,
       speed: this.props.speed,
-      infinite: dynamicInfinite,
+      infinite: this.state.dynamicInfinite,
       centerMode: this.props.centerMode,
       focusOnSelect: this.props.focusOnSelect ? this.selectHandler : null,
-      currentSlide: dynamicCurrentSlide,
+      currentSlide: this.state.currentSlide,
       lazyLoad: this.props.lazyLoad,
       lazyLoadedList: this.state.lazyLoadedList,
       rtl: this.props.rtl,
@@ -189,8 +187,8 @@ export var InnerSlider = createReactClass({
       var dotProps = {
         dotsClass: this.props.dotsClass,
         slideCount: this.state.slideCount,
-        slidesToShow: dynamicInfinite,
-        currentSlide: dynamicCurrentSlide,
+        slidesToShow: this.state.dynamicInfinite,
+        currentSlide: this.state.currentSlide,
         slidesToScroll: this.props.slidesToScroll,
         clickHandler: this.changeSlide,
         children: this.props.children,
@@ -203,7 +201,7 @@ export var InnerSlider = createReactClass({
     var prevArrow, nextArrow;
 
     var arrowProps = {
-      infinite: dynamicInfinite,
+      infinite: this.state.dynamicInfinite,
       centerMode: this.props.centerMode,
       currentSlide: this.state.currentSlide,
       slideCount: this.state.slideCount,
