@@ -1747,14 +1747,24 @@ return /******/ (function(modules) { // webpackBootstrap
 	      'slick-vertical': this.props.vertical
 	    });
 
+	    var dynamicInfinite = this.props.infinite;
+	    var dynamicCurrentSlide = this.state.currentSlide;
+
+	    if (this.state.slideCount && this.props.slidesToShow) {
+	      if (this.state.slideCount <= this.props.slidesToShow) {
+	        dynamicInfinite = false;
+	        this.state.currentSlide = 0;
+	      }
+	    }
+
 	    var trackProps = {
 	      fade: this.props.fade,
 	      cssEase: this.props.cssEase,
 	      speed: this.props.speed,
-	      infinite: this.props.infinite,
+	      infinite: dynamicInfinite,
 	      centerMode: this.props.centerMode,
 	      focusOnSelect: this.props.focusOnSelect ? this.selectHandler : null,
-	      currentSlide: this.state.currentSlide,
+	      currentSlide: dynamicCurrentSlide,
 	      lazyLoad: this.props.lazyLoad,
 	      lazyLoadedList: this.state.lazyLoadedList,
 	      rtl: this.props.rtl,
@@ -1772,8 +1782,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var dotProps = {
 	        dotsClass: this.props.dotsClass,
 	        slideCount: this.state.slideCount,
-	        slidesToShow: this.props.slidesToShow,
-	        currentSlide: this.state.currentSlide,
+	        slidesToShow: dynamicInfinite,
+	        currentSlide: dynamicCurrentSlide,
 	        slidesToScroll: this.props.slidesToScroll,
 	        clickHandler: this.changeSlide,
 	        children: this.props.children,
@@ -1786,7 +1796,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var prevArrow, nextArrow;
 
 	    var arrowProps = {
-	      infinite: this.props.infinite,
+	      infinite: dynamicInfinite,
 	      centerMode: this.props.centerMode,
 	      currentSlide: this.state.currentSlide,
 	      slideCount: this.state.slideCount,
