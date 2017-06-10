@@ -37,8 +37,15 @@ export var InnerSlider = createReactClass({
     if (this.props.init) {
       this.props.init();
     }
+    var dynamicInfinite = false;
+
+    if(React.Children.count(this.props.children) >= this.props.slidesToShow) {
+      dynamicInfinite = this.props.infinite;
+    }
+    
     this.setState({
-      mounted: true
+      mounted: true,
+      dynamicInfinite: dynamicInfinite      
     });
 
     if (this.props.lazyLoad) {

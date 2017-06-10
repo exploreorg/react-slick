@@ -1628,8 +1628,15 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (this.props.init) {
 	      this.props.init();
 	    }
+	    var dynamicInfinite = false;
+
+	    if (_react2.default.Children.count(this.props.children) >= this.props.slidesToShow) {
+	      dynamicInfinite = this.props.infinite;
+	    }
+
 	    this.setState({
-	      mounted: true
+	      mounted: true,
+	      dynamicInfinite: dynamicInfinite
 	    });
 
 	    if (this.props.lazyLoad) {
