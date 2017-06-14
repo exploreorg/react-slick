@@ -2626,9 +2626,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    });
 	  },
 	  getWidth: function getWidth(elem) {
+	    if (!elem) return 0;
 	    return elem.getBoundingClientRect().width || elem.offsetWidth || 0;
 	  },
 	  getHeight: function getHeight(elem) {
+	    if (!elem) return 0;
 	    return elem.getBoundingClientRect().height || elem.offsetHeight || 0;
 	  },
 	  getPaginationInfo: function getPaginationInfo() {
