@@ -96,7 +96,7 @@ class SimpleSlider extends React.Component {
 | preLoad        | int | loading of components in advance, only if "lazyLoad" (default = 0) | Yes |
 | paginationName | string | The name given to the pagination component (if used) | Yes |
 | pauseOnHover   | bool | prevents autoplay while hovering | Yes |
-| responsive     | array | Array of objects in the form of `{ breakpoint: int, settings: { ... } }` The breakpoint _int_ is the `maxWidth` so the settings will be applied when resolution is below this value. Breakpoints in the array should be ordered from smalles to greatest. Use 'unslick' in place of the settings object to disable rendering the carousel at that breakpoint. Example: `[ { breakpoint: 768, settings: { slidesToShow: 3 } }, { breakpoint: 1024, settings: { slidesToShow: 5 } }, { breakpoint: 100000, settings: 'unslick' } ]`| Yes |
+| responsive     | array | Array of objects in the form of `{ breakpoint: int, settings: { ... } }` The breakpoint _int_ is the `maxWidth` so the settings will be applied when resolution is below this value. Breakpoints in the array should be ordered from smallest to greatest. Use 'unslick' in place of the settings object to disable rendering the carousel at that breakpoint. Example: `[ { breakpoint: 768, settings: { slidesToShow: 3 } }, { breakpoint: 1024, settings: { slidesToShow: 5 } }, { breakpoint: 100000, settings: 'unslick' } ]`| Yes |
 | rtl            | bool | Reverses the slide order | Yes |
 | slide         | string |||
 | slidesToShow | int | Number of slides to be visible at a time | Yes |
@@ -112,6 +112,7 @@ class SimpleSlider extends React.Component {
 | afterChange | function | callback function called after the current index changes | Yes |
 | beforeChange | function | callback function called before the current index changes | Yes |
 | slickGoTo | int | go to the specified slide number | |
+| offset | int | amount to offset track for left positioning. | Yes |
 
 
 ### Methods
@@ -141,7 +142,7 @@ You can also set `onClick={this.props.onClick}` if you only want to set the clic
 
 ### Pagination
 
-To utilize numerica pagination, import the `Pagination` component in addition to the slider.
+To utilize numerical pagination, import the `Pagination` component in addition to the slider.
 The `Pagination` component requires a unique `name` property. That value should also be in the slick settings
 for `paginationName`. Once that is complete, set up a function to render the pagination and pass it in as the
 `paginationRender` property for the slick component. Then place the `<Pagination>` element wherever you wish
