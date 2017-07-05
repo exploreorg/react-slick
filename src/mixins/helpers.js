@@ -202,7 +202,7 @@ var helpers = {
 
       if (currentDistance > listLength) {
         this.setItemLazyList(lazyLoadedList, 0 + (currentDistance - listLength - 1))
-        
+
         continue;
       }
 
@@ -291,7 +291,7 @@ var helpers = {
     } else {
       currentSlide = targetSlide;
     }
-
+    
     targetLeft = getTrackLeft(assign({
       slideIndex: targetSlide,
       trackRef: this.track
