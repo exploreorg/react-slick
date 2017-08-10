@@ -65,8 +65,13 @@ var helpers = {
   convertToIndex: function (selector) {
     if (isString(selector)) {
       const slickList = ReactDOM.findDOMNode(this.list);
-      var selectedElement = slickList.querySelector(selector);
-      var selector = selectedElement ? parseInt(selectedElement.getAttribute('data-index')) : 0;
+      var selectedElement = slickList.querySelectorAll(selector);
+      selectedElement.forEach(function(ele) {
+        if(parseInt(ele.attributes['data-index'].value) > 0) {
+          selectedElement = ele;
+        }
+      });
+      selector = selectedElement ? parseInt(selectedElement.getAttribute('data-index')) : 0;
     }
 
     return selector;

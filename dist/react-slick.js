@@ -895,20 +895,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      return emptyFunction.thatReturnsNull;
 	    }
 
-	    for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
-	      var checker = arrayOfTypeCheckers[i];
-	      if (typeof checker !== 'function') {
-	        warning(
-	          false,
-	          'Invalid argument supplid to oneOfType. Expected an array of check functions, but ' +
-	          'received %s at index %s.',
-	          getPostfixForTypeWarning(checker),
-	          i
-	        );
-	        return emptyFunction.thatReturnsNull;
-	      }
-	    }
-
 	    function validate(props, propName, componentName, location, propFullName) {
 	      for (var i = 0; i < arrayOfTypeCheckers.length; i++) {
 	        var checker = arrayOfTypeCheckers[i];
@@ -1041,9 +1027,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  // This handles more types than `getPropType`. Only used for error messages.
 	  // See `createPrimitiveTypeChecker`.
 	  function getPreciseType(propValue) {
-	    if (typeof propValue === 'undefined' || propValue === null) {
-	      return '' + propValue;
-	    }
 	    var propType = getPropType(propValue);
 	    if (propType === 'object') {
 	      if (propValue instanceof Date) {
@@ -1053,23 +1036,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	    return propType;
-	  }
-
-	  // Returns a string that is postfixed to a warning about an invalid type.
-	  // For example, "undefined" or "of type array"
-	  function getPostfixForTypeWarning(value) {
-	    var type = getPreciseType(value);
-	    switch (type) {
-	      case 'array':
-	      case 'object':
-	        return 'an ' + type;
-	      case 'boolean':
-	      case 'date':
-	      case 'regexp':
-	        return 'a ' + type;
-	      default:
-	        return type;
-	    }
 	  }
 
 	  // Returns class name of the object, if any.
@@ -1365,14 +1331,11 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	var emptyFunction = __webpack_require__(6);
 	var invariant = __webpack_require__(7);
-	var ReactPropTypesSecret = __webpack_require__(9);
 
 	module.exports = function() {
-	  function shim(props, propName, componentName, location, propFullName, secret) {
-	    if (secret === ReactPropTypesSecret) {
-	      // It is still safe when called from React.
-	      return;
-	    }
+	  // Important!
+	  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
+	  function shim() {
 	    invariant(
 	      false,
 	      'Calling PropTypes validators directly is not supported by the `prop-types` package. ' +
@@ -1384,8 +1347,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	  function getShim() {
 	    return shim;
 	  };
-	  // Important!
-	  // Keep this list in sync with production version in `./factoryWithTypeCheckers.js`.
 	  var ReactPropTypes = {
 	    array: shim,
 	    bool: shim,
@@ -1646,8 +1607,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	var InnerSlider = exports.InnerSlider = (0, _createReactClass2.default)({
-	  displayName: 'InnerSlider',
-
 	  mixins: [_helpers2.default, _eventHandlers2.default],
 	  list: null,
 	  track: null,
@@ -2617,8 +2576,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	  convertToIndex: function convertToIndex(selector) {
 	    if ((0, _utils.isString)(selector)) {
 	      var slickList = _reactDom2.default.findDOMNode(this.list);
-	      var selectedElement = slickList.querySelector(selector);
-	      var selector = selectedElement ? parseInt(selectedElement.getAttribute('data-index')) : 0;
+	      var selectedElement = slickList.querySelectorAll(selector);
+	      selectedElement.forEach(function (ele) {
+	        if (parseInt(ele.attributes['data-index'].value) > 0) {
+	          selectedElement = ele;
+	        }
+	      });
+	      selector = selectedElement ? parseInt(selectedElement.getAttribute('data-index')) : 0;
 	    }
 
 	    return selector;
@@ -3046,14 +3010,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	    trackWidth: 0,
 	    dynamicInfinite: false
 
-	    // Removed
-	    // transformsEnabled: false,
-	    // $nextArrow: null,
-	    // $prevArrow: null,
-	    // $dots: null,
-	    // $list: null,
-	    // $slideTrack: null,
-	    // $slides: null,
 	};
 
 	module.exports = initialState;
@@ -3144,13 +3100,6 @@ return /******/ (function(modules) { // webpackBootstrap
 	var React = __webpack_require__(3);
 	var factory = __webpack_require__(23);
 
-	if (typeof React === 'undefined') {
-	  throw Error(
-	    'create-react-class could not find the React object. If you are using script tags, ' +
-	      'make sure that React is being loaded before create-react-class.'
-	  );
-	}
-
 	// Hack to grab NoopUpdateQueue from isomorphic React
 	var ReactNoopUpdateQueue = new React.Component().updater;
 
@@ -3199,7 +3148,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  ReactPropTypeLocationNames = {
 	    prop: 'prop',
 	    context: 'context',
-	    childContext: 'child context'
+	    childContext: 'child context',
 	  };
 	} else {
 	  ReactPropTypeLocationNames = {};
@@ -3209,6 +3158,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	  /**
 	   * Policies that describe methods in `ReactClassInterface`.
 	   */
+
 
 	  var injectedMixins = [];
 
@@ -3235,6 +3185,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @internal
 	   */
 	  var ReactClassInterface = {
+
 	    /**
 	     * An array of Mixin objects to include when defining your component.
 	     *
@@ -3325,6 +3276,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     *   }
 	     *
 	     * @return {ReactComponent}
+	     * @nosideeffects
 	     * @required
 	     */
 	    render: 'DEFINE_ONCE',
@@ -3452,6 +3404,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @overridable
 	     */
 	    updateComponent: 'OVERRIDE_BASE'
+
 	  };
 
 	  /**
@@ -3464,106 +3417,71 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * which all other static methods are defined.
 	   */
 	  var RESERVED_SPEC_KEYS = {
-	    displayName: function(Constructor, displayName) {
+	    displayName: function (Constructor, displayName) {
 	      Constructor.displayName = displayName;
 	    },
-	    mixins: function(Constructor, mixins) {
+	    mixins: function (Constructor, mixins) {
 	      if (mixins) {
 	        for (var i = 0; i < mixins.length; i++) {
 	          mixSpecIntoComponent(Constructor, mixins[i]);
 	        }
 	      }
 	    },
-	    childContextTypes: function(Constructor, childContextTypes) {
+	    childContextTypes: function (Constructor, childContextTypes) {
 	      if ((undefined) !== 'production') {
 	        validateTypeDef(Constructor, childContextTypes, 'childContext');
 	      }
-	      Constructor.childContextTypes = _assign(
-	        {},
-	        Constructor.childContextTypes,
-	        childContextTypes
-	      );
+	      Constructor.childContextTypes = _assign({}, Constructor.childContextTypes, childContextTypes);
 	    },
-	    contextTypes: function(Constructor, contextTypes) {
+	    contextTypes: function (Constructor, contextTypes) {
 	      if ((undefined) !== 'production') {
 	        validateTypeDef(Constructor, contextTypes, 'context');
 	      }
-	      Constructor.contextTypes = _assign(
-	        {},
-	        Constructor.contextTypes,
-	        contextTypes
-	      );
+	      Constructor.contextTypes = _assign({}, Constructor.contextTypes, contextTypes);
 	    },
 	    /**
 	     * Special case getDefaultProps which should move into statics but requires
 	     * automatic merging.
 	     */
-	    getDefaultProps: function(Constructor, getDefaultProps) {
+	    getDefaultProps: function (Constructor, getDefaultProps) {
 	      if (Constructor.getDefaultProps) {
-	        Constructor.getDefaultProps = createMergedResultFunction(
-	          Constructor.getDefaultProps,
-	          getDefaultProps
-	        );
+	        Constructor.getDefaultProps = createMergedResultFunction(Constructor.getDefaultProps, getDefaultProps);
 	      } else {
 	        Constructor.getDefaultProps = getDefaultProps;
 	      }
 	    },
-	    propTypes: function(Constructor, propTypes) {
+	    propTypes: function (Constructor, propTypes) {
 	      if ((undefined) !== 'production') {
 	        validateTypeDef(Constructor, propTypes, 'prop');
 	      }
 	      Constructor.propTypes = _assign({}, Constructor.propTypes, propTypes);
 	    },
-	    statics: function(Constructor, statics) {
+	    statics: function (Constructor, statics) {
 	      mixStaticSpecIntoComponent(Constructor, statics);
 	    },
-	    autobind: function() {}
-	  };
+	    autobind: function () {} };
 
 	  function validateTypeDef(Constructor, typeDef, location) {
 	    for (var propName in typeDef) {
 	      if (typeDef.hasOwnProperty(propName)) {
 	        // use a warning instead of an _invariant so components
 	        // don't show up in prod but only in __DEV__
-	        if ((undefined) !== 'production') {
-	          warning(
-	            typeof typeDef[propName] === 'function',
-	            '%s: %s type `%s` is invalid; it must be a function, usually from ' +
-	              'React.PropTypes.',
-	            Constructor.displayName || 'ReactClass',
-	            ReactPropTypeLocationNames[location],
-	            propName
-	          );
-	        }
+	        (undefined) !== 'production' ? warning(typeof typeDef[propName] === 'function', '%s: %s type `%s` is invalid; it must be a function, usually from ' + 'React.PropTypes.', Constructor.displayName || 'ReactClass', ReactPropTypeLocationNames[location], propName) : void 0;
 	      }
 	    }
 	  }
 
 	  function validateMethodOverride(isAlreadyDefined, name) {
-	    var specPolicy = ReactClassInterface.hasOwnProperty(name)
-	      ? ReactClassInterface[name]
-	      : null;
+	    var specPolicy = ReactClassInterface.hasOwnProperty(name) ? ReactClassInterface[name] : null;
 
 	    // Disallow overriding of base class methods unless explicitly allowed.
 	    if (ReactClassMixin.hasOwnProperty(name)) {
-	      _invariant(
-	        specPolicy === 'OVERRIDE_BASE',
-	        'ReactClassInterface: You are attempting to override ' +
-	          '`%s` from your class specification. Ensure that your method names ' +
-	          'do not overlap with React methods.',
-	        name
-	      );
+	      _invariant(specPolicy === 'OVERRIDE_BASE', 'ReactClassInterface: You are attempting to override ' + '`%s` from your class specification. Ensure that your method names ' + 'do not overlap with React methods.', name);
 	    }
 
 	    // Disallow defining methods more than once unless explicitly allowed.
 	    if (isAlreadyDefined) {
-	      _invariant(
-	        specPolicy === 'DEFINE_MANY' || specPolicy === 'DEFINE_MANY_MERGED',
-	        'ReactClassInterface: You are attempting to define ' +
-	          '`%s` on your component more than once. This conflict may be due ' +
-	          'to a mixin.',
-	        name
-	      );
+	      _invariant(specPolicy === 'DEFINE_MANY' || specPolicy === 'DEFINE_MANY_MERGED', 'ReactClassInterface: You are attempting to define ' + '`%s` on your component more than once. This conflict may be due ' + 'to a mixin.', name);
 	    }
 	  }
 
@@ -3577,33 +3495,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var typeofSpec = typeof spec;
 	        var isMixinValid = typeofSpec === 'object' && spec !== null;
 
-	        if ((undefined) !== 'production') {
-	          warning(
-	            isMixinValid,
-	            "%s: You're attempting to include a mixin that is either null " +
-	              'or not an object. Check the mixins included by the component, ' +
-	              'as well as any mixins they include themselves. ' +
-	              'Expected object but got %s.',
-	            Constructor.displayName || 'ReactClass',
-	            spec === null ? null : typeofSpec
-	          );
-	        }
+	        (undefined) !== 'production' ? warning(isMixinValid, '%s: You\'re attempting to include a mixin that is either null ' + 'or not an object. Check the mixins included by the component, ' + 'as well as any mixins they include themselves. ' + 'Expected object but got %s.', Constructor.displayName || 'ReactClass', spec === null ? null : typeofSpec) : void 0;
 	      }
 
 	      return;
 	    }
 
-	    _invariant(
-	      typeof spec !== 'function',
-	      "ReactClass: You're attempting to " +
-	        'use a component class or function as a mixin. Instead, just use a ' +
-	        'regular object.'
-	    );
-	    _invariant(
-	      !isValidElement(spec),
-	      "ReactClass: You're attempting to " +
-	        'use a component as a mixin. Instead, just use a regular object.'
-	    );
+	    _invariant(typeof spec !== 'function', 'ReactClass: You\'re attempting to ' + 'use a component class or function as a mixin. Instead, just use a ' + 'regular object.');
+	    _invariant(!isValidElement(spec), 'ReactClass: You\'re attempting to ' + 'use a component as a mixin. Instead, just use a regular object.');
 
 	    var proto = Constructor.prototype;
 	    var autoBindPairs = proto.__reactAutoBindPairs;
@@ -3638,11 +3537,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // 2. Overridden methods (that were mixed in).
 	        var isReactClassMethod = ReactClassInterface.hasOwnProperty(name);
 	        var isFunction = typeof property === 'function';
-	        var shouldAutoBind =
-	          isFunction &&
-	          !isReactClassMethod &&
-	          !isAlreadyDefined &&
-	          spec.autobind !== false;
+	        var shouldAutoBind = isFunction && !isReactClassMethod && !isAlreadyDefined && spec.autobind !== false;
 
 	        if (shouldAutoBind) {
 	          autoBindPairs.push(name, property);
@@ -3652,15 +3547,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	            var specPolicy = ReactClassInterface[name];
 
 	            // These cases should already be caught by validateMethodOverride.
-	            _invariant(
-	              isReactClassMethod &&
-	                (specPolicy === 'DEFINE_MANY_MERGED' ||
-	                  specPolicy === 'DEFINE_MANY'),
-	              'ReactClass: Unexpected spec policy %s for key %s ' +
-	                'when mixing in component specs.',
-	              specPolicy,
-	              name
-	            );
+	            _invariant(isReactClassMethod && (specPolicy === 'DEFINE_MANY_MERGED' || specPolicy === 'DEFINE_MANY'), 'ReactClass: Unexpected spec policy %s for key %s ' + 'when mixing in component specs.', specPolicy, name);
 
 	            // For methods which are defined more than once, call the existing
 	            // methods before calling the new property, merging if appropriate.
@@ -3695,23 +3582,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 
 	      var isReserved = name in RESERVED_SPEC_KEYS;
-	      _invariant(
-	        !isReserved,
-	        'ReactClass: You are attempting to define a reserved ' +
-	          'property, `%s`, that shouldn\'t be on the "statics" key. Define it ' +
-	          'as an instance property instead; it will still be accessible on the ' +
-	          'constructor.',
-	        name
-	      );
+	      _invariant(!isReserved, 'ReactClass: You are attempting to define a reserved ' + 'property, `%s`, that shouldn\'t be on the "statics" key. Define it ' + 'as an instance property instead; it will still be accessible on the ' + 'constructor.', name);
 
 	      var isInherited = name in Constructor;
-	      _invariant(
-	        !isInherited,
-	        'ReactClass: You are attempting to define ' +
-	          '`%s` on your component more than once. This conflict may be ' +
-	          'due to a mixin.',
-	        name
-	      );
+	      _invariant(!isInherited, 'ReactClass: You are attempting to define ' + '`%s` on your component more than once. This conflict may be ' + 'due to a mixin.', name);
 	      Constructor[name] = property;
 	    }
 	  }
@@ -3724,22 +3598,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * @return {object} one after it has been mutated to contain everything in two.
 	   */
 	  function mergeIntoWithNoDuplicateKeys(one, two) {
-	    _invariant(
-	      one && two && typeof one === 'object' && typeof two === 'object',
-	      'mergeIntoWithNoDuplicateKeys(): Cannot merge non-objects.'
-	    );
+	    _invariant(one && two && typeof one === 'object' && typeof two === 'object', 'mergeIntoWithNoDuplicateKeys(): Cannot merge non-objects.');
 
 	    for (var key in two) {
 	      if (two.hasOwnProperty(key)) {
-	        _invariant(
-	          one[key] === undefined,
-	          'mergeIntoWithNoDuplicateKeys(): ' +
-	            'Tried to merge two objects with the same key: `%s`. This conflict ' +
-	            'may be due to a mixin; in particular, this may be caused by two ' +
-	            'getInitialState() or getDefaultProps() methods returning objects ' +
-	            'with clashing keys.',
-	          key
-	        );
+	        _invariant(one[key] === undefined, 'mergeIntoWithNoDuplicateKeys(): ' + 'Tried to merge two objects with the same key: `%s`. This conflict ' + 'may be due to a mixin; in particular, this may be caused by two ' + 'getInitialState() or getDefaultProps() methods returning objects ' + 'with clashing keys.', key);
 	        one[key] = two[key];
 	      }
 	    }
@@ -3800,14 +3663,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	      boundMethod.__reactBoundArguments = null;
 	      var componentName = component.constructor.displayName;
 	      var _bind = boundMethod.bind;
-	      boundMethod.bind = function(newThis) {
-	        for (
-	          var _len = arguments.length,
-	            args = Array(_len > 1 ? _len - 1 : 0),
-	            _key = 1;
-	          _key < _len;
-	          _key++
-	        ) {
+	      boundMethod.bind = function (newThis) {
+	        for (var _len = arguments.length, args = Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
 	          args[_key - 1] = arguments[_key];
 	        }
 
@@ -3815,24 +3672,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	        // ignore the value of "this" that the user is trying to use, so
 	        // let's warn.
 	        if (newThis !== component && newThis !== null) {
-	          if ((undefined) !== 'production') {
-	            warning(
-	              false,
-	              'bind(): React component methods may only be bound to the ' +
-	                'component instance. See %s',
-	              componentName
-	            );
-	          }
+	          (undefined) !== 'production' ? warning(false, 'bind(): React component methods may only be bound to the ' + 'component instance. See %s', componentName) : void 0;
 	        } else if (!args.length) {
-	          if ((undefined) !== 'production') {
-	            warning(
-	              false,
-	              'bind(): You are binding a component method to the component. ' +
-	                'React does this for you automatically in a high-performance ' +
-	                'way, so you can safely remove this call. See %s',
-	              componentName
-	            );
-	          }
+	          (undefined) !== 'production' ? warning(false, 'bind(): You are binding a component method to the component. ' + 'React does this for you automatically in a high-performance ' + 'way, so you can safely remove this call. See %s', componentName) : void 0;
 	          return boundMethod;
 	        }
 	        var reboundMethod = _bind.apply(boundMethod, arguments);
@@ -3859,14 +3701,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	    }
 	  }
 
-	  var IsMountedPreMixin = {
-	    componentDidMount: function() {
+	  var IsMountedMixin = {
+	    componentDidMount: function () {
 	      this.__isMounted = true;
-	    }
-	  };
-
-	  var IsMountedPostMixin = {
-	    componentWillUnmount: function() {
+	    },
+	    componentWillUnmount: function () {
 	      this.__isMounted = false;
 	    }
 	  };
@@ -3876,11 +3715,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	   * therefore not already part of the modern ReactComponent.
 	   */
 	  var ReactClassMixin = {
+
 	    /**
 	     * TODO: This will be deprecated because state should always keep a consistent
 	     * type signature and the only use case for this, is to avoid that.
 	     */
-	    replaceState: function(newState, callback) {
+	    replaceState: function (newState, callback) {
 	      this.updater.enqueueReplaceState(this, newState, callback);
 	    },
 
@@ -3890,29 +3730,17 @@ return /******/ (function(modules) { // webpackBootstrap
 	     * @protected
 	     * @final
 	     */
-	    isMounted: function() {
+	    isMounted: function () {
 	      if ((undefined) !== 'production') {
-	        warning(
-	          this.__didWarnIsMounted,
-	          '%s: isMounted is deprecated. Instead, make sure to clean up ' +
-	            'subscriptions and pending requests in componentWillUnmount to ' +
-	            'prevent memory leaks.',
-	          (this.constructor && this.constructor.displayName) ||
-	            this.name ||
-	            'Component'
-	        );
+	        (undefined) !== 'production' ? warning(this.__didWarnIsMounted, '%s: isMounted is deprecated. Instead, make sure to clean up ' + 'subscriptions and pending requests in componentWillUnmount to ' + 'prevent memory leaks.', this.constructor && this.constructor.displayName || this.name || 'Component') : void 0;
 	        this.__didWarnIsMounted = true;
 	      }
 	      return !!this.__isMounted;
 	    }
 	  };
 
-	  var ReactClassComponent = function() {};
-	  _assign(
-	    ReactClassComponent.prototype,
-	    ReactComponent.prototype,
-	    ReactClassMixin
-	  );
+	  var ReactClassComponent = function () {};
+	  _assign(ReactClassComponent.prototype, ReactComponent.prototype, ReactClassMixin);
 
 	  /**
 	   * Creates a composite component class given a class specification.
@@ -3926,16 +3754,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	    // To keep our warnings more understandable, we'll use a little hack here to
 	    // ensure that Constructor.name !== 'Constructor'. This makes sure we don't
 	    // unnecessarily identify a class without displayName as 'Constructor'.
-	    var Constructor = identity(function(props, context, updater) {
+	    var Constructor = identity(function (props, context, updater) {
 	      // This constructor gets overridden by mocks. The argument is used
 	      // by mocks to assert on what gets mounted.
 
 	      if ((undefined) !== 'production') {
-	        warning(
-	          this instanceof Constructor,
-	          'Something is calling a React component directly. Use a factory or ' +
-	            'JSX instead. See: https://fb.me/react-legacyfactory'
-	        );
+	        (undefined) !== 'production' ? warning(this instanceof Constructor, 'Something is calling a React component directly. Use a factory or ' + 'JSX instead. See: https://fb.me/react-legacyfactory') : void 0;
 	      }
 
 	      // Wire up auto-binding
@@ -3956,20 +3780,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	      var initialState = this.getInitialState ? this.getInitialState() : null;
 	      if ((undefined) !== 'production') {
 	        // We allow auto-mocks to proceed as if they're returning null.
-	        if (
-	          initialState === undefined &&
-	          this.getInitialState._isMockFunction
-	        ) {
+	        if (initialState === undefined && this.getInitialState._isMockFunction) {
 	          // This is probably bad practice. Consider warning here and
 	          // deprecating this convenience.
 	          initialState = null;
 	        }
 	      }
-	      _invariant(
-	        typeof initialState === 'object' && !Array.isArray(initialState),
-	        '%s.getInitialState(): must return an object or null',
-	        Constructor.displayName || 'ReactCompositeComponent'
-	      );
+	      _invariant(typeof initialState === 'object' && !Array.isArray(initialState), '%s.getInitialState(): must return an object or null', Constructor.displayName || 'ReactCompositeComponent');
 
 	      this.state = initialState;
 	    });
@@ -3979,9 +3796,8 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	    injectedMixins.forEach(mixSpecIntoComponent.bind(null, Constructor));
 
-	    mixSpecIntoComponent(Constructor, IsMountedPreMixin);
+	    mixSpecIntoComponent(Constructor, IsMountedMixin);
 	    mixSpecIntoComponent(Constructor, spec);
-	    mixSpecIntoComponent(Constructor, IsMountedPostMixin);
 
 	    // Initialize the defaultProps property after all mixins have been merged.
 	    if (Constructor.getDefaultProps) {
@@ -4001,26 +3817,11 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 
-	    _invariant(
-	      Constructor.prototype.render,
-	      'createClass(...): Class specification must implement a `render` method.'
-	    );
+	    _invariant(Constructor.prototype.render, 'createClass(...): Class specification must implement a `render` method.');
 
 	    if ((undefined) !== 'production') {
-	      warning(
-	        !Constructor.prototype.componentShouldUpdate,
-	        '%s has a method called ' +
-	          'componentShouldUpdate(). Did you mean shouldComponentUpdate()? ' +
-	          'The name is phrased as a question because the function is ' +
-	          'expected to return a value.',
-	        spec.displayName || 'A component'
-	      );
-	      warning(
-	        !Constructor.prototype.componentWillRecieveProps,
-	        '%s has a method called ' +
-	          'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?',
-	        spec.displayName || 'A component'
-	      );
+	      (undefined) !== 'production' ? warning(!Constructor.prototype.componentShouldUpdate, '%s has a method called ' + 'componentShouldUpdate(). Did you mean shouldComponentUpdate()? ' + 'The name is phrased as a question because the function is ' + 'expected to return a value.', spec.displayName || 'A component') : void 0;
+	      (undefined) !== 'production' ? warning(!Constructor.prototype.componentWillRecieveProps, '%s has a method called ' + 'componentWillRecieveProps(). Did you mean componentWillReceiveProps()?', spec.displayName || 'A component') : void 0;
 	    }
 
 	    // Reduce time spent doing lookups by setting these on the prototype.
