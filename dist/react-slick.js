@@ -1925,14 +1925,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if (options.message === 'previous') {
 	      slideOffset = indexOffset === 0 ? slidesToScroll : slidesToShow - indexOffset;
 	      targetSlide = currentSlide - slideOffset;
-	      if (this.props.lazyLoad) {
+	      if (this.props.lazyLoad && !this.props.infinite) {
 	        previousInt = currentSlide - slideOffset;
 	        targetSlide = previousInt === -1 ? slideCount - 1 : previousInt;
 	      }
 	    } else if (options.message === 'next') {
 	      slideOffset = indexOffset === 0 ? slidesToScroll : indexOffset;
 	      targetSlide = currentSlide + slideOffset;
-	      if (this.props.lazyLoad) {
+	      if (this.props.lazyLoad && !this.props.infinite) {
 	        targetSlide = (currentSlide + slidesToScroll) % slideCount + indexOffset;
 	      }
 	    } else if (options.message === 'dots' || options.message === 'children') {
@@ -2577,7 +2577,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    if ((0, _utils.isString)(selector)) {
 	      var slickList = _reactDom2.default.findDOMNode(this.list);
 	      var selectedElement = slickList.querySelectorAll(selector);
-	      selectedElement.forEach(function (ele) {
+	      [].forEach.call(selectedElement, function (ele) {
 	        if (parseInt(ele.attributes['data-index'].value) > 0) {
 	          selectedElement = ele;
 	        }

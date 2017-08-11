@@ -66,7 +66,7 @@ var helpers = {
     if (isString(selector)) {
       const slickList = ReactDOM.findDOMNode(this.list);
       var selectedElement = slickList.querySelectorAll(selector);
-      selectedElement.forEach(function(ele) {
+      [].forEach.call(selectedElement, function(ele) {
         if(parseInt(ele.attributes['data-index'].value) > 0) {
           selectedElement = ele;
         }
