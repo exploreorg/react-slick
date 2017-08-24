@@ -1494,6 +1494,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	    this.innerSlider.slickNext();
 	  };
 
+	  Slider.prototype.slickPrevPage = function slickPrevPage() {
+	    this.innerSlider.slickPrevPage();
+	  };
+
+	  Slider.prototype.slickNextPage = function slickNextPage() {
+	    this.innerSlider.slickNextPage();
+	  };
+
 	  Slider.prototype.slickGoTo = function slickGoTo(slide) {
 	    this.innerSlider.slickGoTo(slide);
 	  };
@@ -1734,6 +1742,14 @@ return /******/ (function(modules) { // webpackBootstrap
 	  },
 	  slickNext: function slickNext() {
 	    this.changeSlide({ message: 'next' });
+	  },
+	  slickPrevPage: function slickPrevPage() {
+	    var offset = this.getSlidesToScrollnFromWidth();
+	    this.slickBackward(offset);
+	  },
+	  slickNextPage: function slickNextPage() {
+	    var offset = this.getSlidesToScrollnFromWidth();
+	    this.slickForward(offset);
 	  },
 	  slickGoTo: function slickGoTo(slide) {
 	    slide = this.convertToIndex(slide);
@@ -2661,6 +2677,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	      }
 	    }
 	    return [currentPage, totalPages];
+	  },
+	  getSlidesToScrollnFromWidth: function getSlidesToScrollnFromWidth() {
+	    return Math.floor(this.state.listWidth / this.state.slideWidth);
 	  },
 
 	  adaptHeight: function adaptHeight() {

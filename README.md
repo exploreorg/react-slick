@@ -121,6 +121,8 @@ class SimpleSlider extends React.Component {
 * `slickGoTo(slide)` - function called to change current slide to given slide number or css selector ([Example](https://github.com/akiran/react-slick/blob/master/examples/SlickGoTo.js))
 * `slickForward(numberOfSlidesToScroll)` - function called to scroll the slider forward `n` number of items
 * `slickBackward(numberOfSlidesToScroll)` - function called to scroll the slider backward `n` number of items
+* `slickNextPage()` - function called to scroll the slider forward 1 page (based on visible items)
+* `slickPreviousPage()` - function called to scroll the slider backward 1 page (based on visible items)
 
 ### Custom next/prev arrows
 

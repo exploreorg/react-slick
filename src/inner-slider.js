@@ -144,6 +144,14 @@ export var InnerSlider = createReactClass({
   slickNext: function () {
     this.changeSlide({message: 'next'});
   },
+  slickPrevPage: function () {
+    var offset = this.getSlidesToScrollnFromWidth();
+    this.slickBackward(offset);
+  },
+  slickNextPage: function () {
+    var offset = this.getSlidesToScrollnFromWidth();
+    this.slickForward(offset);
+  },
   slickGoTo: function (slide) {
     slide = this.convertToIndex(slide);
     typeof slide === 'number' && this.changeSlide({

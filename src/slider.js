@@ -64,8 +64,16 @@ export default class Slider extends React.Component {
     this.innerSlider.slickNext();
   }
 
+  slickPrevPage() {
+    this.innerSlider.slickPrevPage();
+  }
+
+  slickNextPage() {
+    this.innerSlider.slickNextPage();
+  }
+
   slickGoTo(slide) {
-    this.innerSlider.slickGoTo(slide)
+    this.innerSlider.slickGoTo(slide);
   }
 
   slickForward(numberOfItems) {

@@ -149,6 +149,9 @@ var helpers = {
     }
     return [currentPage, totalPages];
   },
+  getSlidesToScrollnFromWidth() {
+    return Math.floor(this.state.listWidth / this.state.slideWidth);
+  },
   adaptHeight: function () {
     if (this.props.adaptiveHeight) {
       var selector = '[data-index="' + this.getCurrentSlide(this.state.currentSlide) +'"]';
